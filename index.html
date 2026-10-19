@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fdf8f1">
+  <title>Hôm nay ăn gì?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Handjet:wght@400..900&display=swap" rel="stylesheet">
+  <link rel="icon" href="images/favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <link rel="manifest" href="images/site.webmanifest">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Hôm nay ăn gì?">
+  <meta property="og:description" content="Mở két món, quay vòng, bốc thẻ, tung xu chọn món hôm nay.">
+  <meta property="og:image" content="images/matup.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="images/matup.png">
+  <link rel="stylesheet" href="style/style.css">
+</head>
+<body data-tab="food">
+  <canvas id="confetti" aria-hidden="true"></canvas>
+  <div id="flash" aria-hidden="true"></div>
+  <div class="orbits" aria-hidden="true"><i>🍜</i><i>🧋</i><i>🍕</i><i>🎲</i><i>🍰</i><i>🥟</i></div>
+
+  <main class="app">
+    <header class="top">
+      <div class="brand">
+        <span class="brand-emoji" id="brandEmoji" aria-hidden="true">🍜</span>
+        <div>
+          <h1 id="title">Hôm nay ăn gì?</h1>
+          <p id="subtitle" class="subtitle"></p>
+        </div>
+      </div>
+      <div class="top-right">
+        <div class="hud-chip" title="Cấp độ">
+          <span class="lvl-badge" id="lvlNum">1</span>
+          <span class="xpbar"><i id="xpFill"></i></span>
+        </div>
+        <p class="counter">Lượt mở <b id="openCount">0</b></p>
+        <div class="streak-chip" id="streakChip" title="Số ngày liên tiếp chọn món">
+          <span class="streak-day">Streak</span>
+          <span class="streak-val" id="streakVal">0</span>
+          <span class="streak-day">ngày</span>
+        </div>
+        <button id="resetCountBtn" class="icon-btn" aria-label="Reset lượt mở" title="Reset lượt mở">↻</button>
+        <button id="muteBtn" class="icon-btn" aria-label="Bật/tắt âm thanh" title="Bật/tắt âm thanh">🔊</button>
+      </div>
+    </header>
+
+    <nav class="tabs reveal" aria-label="Chọn loại">
+      <button class="tab is-active" data-tab="food"><i class="pxi">🍜</i> Đồ ăn</button>
+      <button class="tab" data-tab="drink"><i class="pxi">🧋</i> Đồ uống</button>
+    </nav>
+
+    <section class="panel reveal" aria-label="Khu Vực Món">
+      <div class="controls">
+        <label class="field">Nhóm
+          <select id="tagSel"></select>
+        </label>
+        <label class="field">Ngân sách
+          <select id="budgetSel">
+            <option value="0">Không giới hạn</option>
+            <option value="30000">Tối đa 30k</option>
+            <option value="50000">Tối đa 50k</option>
+            <option value="80000">Tối đa 80k</option>
+            <option value="120000">Tối đa 120k</option>
+          </select>
+        </label>
+        <label class="field">Chống lặp
+          <span class="anti-wrap"><input type="checkbox" id="antiChk"> <span>7 ngày</span></span>
+        </label>
+        <p class="pool-info" id="poolInfo"></p>
+      </div>
+
+      <p class="ate-line" id="ateLine" hidden></p>
+
+      <div class="modes" id="modes" role="group" aria-label="Cách chọn ngẫu nhiên"></div>
+      <div class="stage" id="stage" aria-live="polite"></div>
+      <button id="cta" class="cta" type="button"></button>
+    </section>
+
+    <article class="result" id="result" hidden>
+      <div class="result-img" id="rImg"></div>
+      <div class="result-body">
+        <p class="joke" id="rJoke"></p>
+        <h2 id="rTitle"></h2>
+        <div class="meta" id="rMeta"></div>
+        <p class="desc" id="rDesc"></p>
+        <div class="actions">
+          <a id="rOrder" class="btn primary" target="_blank" rel="noopener"></a>
+          <button id="rAte" class="btn ate" type="button">✅ Ăn rồi, ghi sổ</button>
+          <button id="rAgain" class="btn" type="button">🔁 Không ưng, mở lại</button>
+        </div>
+      </div>
+    </article>
+
+    <section class="vault reveal" id="vault" aria-label="Kho món">
+      <div class="vault-head">
+        <h2>Trong kho có gì?</h2>
+        <div class="vault-tools">
+          <button class="btn small" id="addBtn" type="button">＋ Thêm món</button>
+          <button class="btn small primary" id="saveBtn" type="button">💾 Lưu vào data.js</button>
+          <button class="btn small ghost" id="discardBtn" type="button" hidden>↺ Bỏ thay đổi</button>
+        </div>
+      </div>
+      <p class="vault-note" id="vaultNote"></p>
+      <div class="vault-grid" id="vaultGrid"></div>
+    </section>
+
+    <section class="vault reveal" aria-label="Sổ sưu tầm">
+      <div class="vault-head">
+        <h2>📖 Sổ sưu tầm</h2>
+        <p class="dex-prog"><b id="dexNum">0/0</b><span class="dexbar"><i id="dexFill"></i></span></p>
+      </div>
+      <p class="vault-note" id="dexNote"></p>
+      <div class="dex-grid" id="dexGrid"></div>
+    </section>
+
+    <section class="vault reveal" aria-label="Thực đơn 7 ngày">
+      <div class="vault-head">
+        <h2>📅 Thực đơn 7 ngày</h2>
+        <div class="vault-tools">
+          <button class="btn small primary" id="planGen" type="button">🎲 Lập thực đơn tuần</button>
+          <button class="btn small" id="planAteAll" type="button">✅ Ghi cả tuần vào chống lặp</button>
+        </div>
+      </div>
+      <p class="vault-note" id="planNote"></p>
+      <div class="plan-grid" id="planGrid"></div>
+    </section>
+
+    <section class="history reveal" aria-label="Lịch sử">
+      <div class="history-head">
+        <h3>Mấy lần gần đây két chọn</h3>
+        <button class="link-btn" id="clearHistory" type="button">Xoá</button>
+      </div>
+      <div class="chips" id="history"></div>
+    </section>
+  </main>
+
+  <dialog id="editDialog">
+    <form id="editForm">
+      <h3 id="editTitle">Thêm món</h3>
+      <input type="hidden" name="id">
+      <label>Tên món
+        <input name="name" required maxlength="40" placeholder="Bún đậu mắm tôm">
+      </label>
+      <div class="row2">
+        <label>Emoji
+          <input name="emoji" maxlength="4" placeholder="🍲">
+        </label>
+        <label>Giá (đồng, gõ 45000 hoặc 45k)
+          <input name="price" inputmode="numeric" placeholder="45k">
+        </label>
+      </div>
+      <label>Mô tả
+        <textarea name="desc" rows="2" maxlength="200" placeholder="Vài dòng cho thèm"></textarea>
+      </label>
+      <label>Tag (cách nhau bằng dấu phẩy)
+        <input name="tags" placeholder="rẻ, ăn nhanh">
+      </label>
+      <label>Link đặt món
+        <input name="link" type="url" placeholder="https://...">
+      </label>
+      <label>Ảnh (đường dẫn, trống = images/&lt;id&gt;.jpg)
+        <input name="image" placeholder="images/bun-dau.jpg">
+      </label>
+      <div class="row2">
+        <label>Độ hiếm
+          <select name="rarity">
+            <option value="">Tự động theo giá</option>
+            <option value="thuong">Thường</option>
+            <option value="hiem">Hiếm</option>
+            <option value="suthi">Sử thi</option>
+            <option value="huyenthoai">Huyền thoại</option>
+            <option value="covat">Cổ vật</option>
+          </select>
+        </label>
+        <label class="check">
+          <input type="checkbox" name="show" checked> Hiện trong két
+        </label>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="btn" id="editCancel">Huỷ</button>
+        <button type="submit" class="btn primary">Lưu món</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="rerollConfirmDialog">
+    <form method="dialog">
+      <h3>Xóa món trước?</h3>
+      <p>Bạn có muốn xóa món trước đó ra khỏi danh sách quay trước khi quay tiếp không?</p>
+      <div class="dialog-actions">
+        <button type="button" class="btn" id="rerollNo">Không</button>
+        <button type="button" class="btn primary" id="rerollYes">Có</button>
+      </div>
+    </form>
+  </dialog>
+
+  <section class="reveal" aria-label="Chậu cây">
+    <h2 class="garden-title">🪴 Chậu cây</h2>
+    <div class="pot-display" id="potDisplay"></div>
+    <div class="pot-actions" style="display:flex; gap:10px; justify-content:center; margin-top:10px; flex-wrap:wrap;">
+      <button id="btnPlant" class="btn" type="button" disabled>🌱 Trồng hạt giống</button>
+      <button id="btnWater" class="btn" type="button" disabled>💧 Tưới nước</button>
+      <button id="btnFert" class="btn" type="button" disabled>🧪 Bón phân</button>
+      <button id="btnUpgrade" class="btn primary" type="button" disabled>⬆️ Nâng cấp chậu</button>
+    </div>
+    <p id="potHint" style="text-align:center; color:var(--muted); font-size:13px; margin-top:8px;">Chưa có chậu. Nhận chậu đất từ kho để bắt đầu.</p>
+  </section>
+
+  <section class="reveal" aria-label="Kho trồng cây">
+    <h2 class="garden-title">🌱 Kho trồng cây</h2>
+    <div class="garden-grid" id="gardenGrid"></div>
+    <p id="gardenEmpty" style="text-align:center; color:var(--muted); font-size:13px;">Chưa có vật phẩm. Hãy chọn món mỗi ngày để rơi ngẫu nhiên vật phẩm trồng cây.</p>
+  </section>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <div id="loader" role="status" aria-live="polite">
+    <div class="loader-box">
+      <div class="loader-emoji">🍜</div>
+      <p class="loader-name">HÔM NAY ĂN GÌ?</p>
+      <div class="loader-bar"><i id="loaderFill"></i></div>
+      <p class="loader-tip" id="loaderTip">Đang load danh sách món...</p>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
