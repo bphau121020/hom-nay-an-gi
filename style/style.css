@@ -81,8 +81,9 @@ button { cursor: pointer; }
 }
 
 /* ===== Header ===== */
-.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
-.brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+.brand { display: flex; flex: 1 1 405px; align-items: center; gap: 14px; min-width: 0; }
+.brand > div { min-width: 0; }
 .brand-emoji {
   flex: none;
   display: grid; place-items: center;
@@ -109,10 +110,10 @@ h1 {
 }
 body[data-tab="drink"] h1 { background: linear-gradient(95deg, #1fb6cf, #4f8cff 60%, #7bd5f5); -webkit-background-clip: text; background-clip: text; }
 .subtitle { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
-.top-right { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 10px; flex: none; }
+.top-right { display: flex; flex: 0 1 auto; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; min-width: 0; margin-left: auto; }
 .counter {
   margin: 0;
-  padding: 8px 14px;
+  padding: 6px 11px;
   font-size: 12px; color: var(--muted); text-align: center; line-height: 1.25;
   background: var(--glass);
   -webkit-backdrop-filter: var(--blur);
@@ -132,8 +133,8 @@ body[data-tab="drink"] h1 { background: linear-gradient(95deg, #1fb6cf, #4f8cff 
   -webkit-text-fill-color: transparent;
 }
 .icon-btn {
-  width: 46px; height: 46px;
-  font-size: 20px;
+  width: 40px; height: 40px;
+  font-size: 18px;
   background: var(--glass);
   -webkit-backdrop-filter: var(--blur);
   backdrop-filter: var(--blur);
@@ -147,7 +148,7 @@ body[data-tab="drink"] h1 { background: linear-gradient(95deg, #1fb6cf, #4f8cff 
 /* ===== Streak chip ===== */
 .streak-chip {
   display: flex; align-items: center; gap: 8px;
-  padding: 6px 13px; border-radius: 999px;
+  padding: 5px 11px; border-radius: 999px;
   background: var(--glass); border: 1px solid var(--glass-brd);
   box-shadow: var(--shadow-s);
   font-family: var(--font-display); font-weight: 800; font-size: 15px;
@@ -656,7 +657,7 @@ select:focus-visible, dialog input:focus-visible, dialog textarea:focus-visible 
 .vault-tools { display: flex; flex-wrap: wrap; gap: 8px; }
 .vault-note { margin: 10px 0 16px; font-size: 13px; color: var(--muted); }
 .vault-note.dirty { color: color-mix(in srgb, var(--gold) 85%, #7a4a00); font-weight: 600; }
-.vault-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(262px, 1fr)); gap: 12px; }
+.vault-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 12px; }
 .vcard {
   display: grid;
   grid-template-columns: 74px minmax(0, 1fr) auto;
@@ -684,8 +685,9 @@ select:focus-visible, dialog input:focus-visible, dialog textarea:focus-visible 
 }
 .vthumb .emoji-fallback { font-size: 36px; }
 .vthumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.vinfo h4 { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.25; }
-.vinfo p { margin: 2px 0 0; font-size: 12.5px; color: var(--muted); }
+.vinfo { min-width: 0; }
+.vinfo h4 { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.25; overflow-wrap: anywhere; }
+.vinfo p { margin: 2px 0 0; font-size: 12.5px; color: var(--muted); overflow-wrap: anywhere; }
 .vinfo .vmeta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 4px; }
 .rbadge { padding: 1px 9px; font-size: 11px; font-weight: 700; color: #fff; background: var(--rc); border-radius: 999px; box-shadow: 0 2px 8px color-mix(in srgb, var(--rc) 40%, transparent); }
 .vprice { color: color-mix(in srgb, var(--gold) 88%, #7a4a00); font-weight: 700; font-size: 12.5px; }
@@ -894,7 +896,7 @@ html { scroll-behavior: smooth; }
   border-radius: 50%;
   box-shadow: 0 4px 12px color-mix(in srgb, var(--gold) 45%, transparent), inset 0 1px 0 rgba(255,255,255,.55);
 }
-.xpbar { display: block; width: 78px; height: 9px; border-radius: 999px; background: rgba(30,41,59,.12); overflow: hidden; box-shadow: inset 0 1px 3px rgba(30,41,59,.14); }
+.xpbar { display: block; width: 60px; height: 9px; border-radius: 999px; background: rgba(30,41,59,.12); overflow: hidden; box-shadow: inset 0 1px 3px rgba(30,41,59,.14); }
 #xpFill {
   display: block; height: 100%; width: 0%; border-radius: inherit;
   background: linear-gradient(90deg, var(--gold), var(--ember), var(--gold));
@@ -953,6 +955,11 @@ body.is-busy .stage { animation: stagePulse 1.1s ease-in-out infinite; }
   .hud-chip { padding: 5px 10px 5px 5px; }
   .xpbar { width: 56px; }
   .loader-box { padding: 28px 30px; }
+  .top-right { gap: 8px; }
+  .icon-btn { width: 42px; height: 42px; font-size: 18px; }
+  .streak-chip { gap: 6px; padding: 5px 10px; font-size: 13px; }
+  .streak-chip .streak-day { font-size: 12px; }
+  .brand { gap: 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -985,7 +992,7 @@ h1, h2, dialog h3, .counter b, .pool-info b, .loader-name, .slot-name {
   -webkit-text-fill-color: currentColor !important;
   text-shadow: 3px 3px 0 rgba(30, 41, 59, .2) !important;
 }
-h1 { color: var(--accent) !important; font-size: clamp(34px, 7vw, 52px) !important; letter-spacing: .02em !important; }
+h1 { color: var(--accent) !important; font-size: clamp(24px, 8.5vw, 52px) !important; letter-spacing: .02em !important; }
 h2, .vault h2, .loader-name, .counter b, .pool-info b, dialog h3 { color: var(--ember) !important; }
 
 .panel, .tabs, .counter, .icon-btn, .hud-chip, .brand-emoji, .btn, .cta, .mode, .crate-view,
@@ -1198,3 +1205,23 @@ body.is-busy .stage { animation-timing-function: steps(4, end) !important; }
   .dex-grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); }
   .dexbar { width: 90px; }
 }
+
+/* Thẻ món gọn hơn khi màn hẹp: ảnh + thông tin, nút tách xuống hàng riêng */
+@media (max-width: 760px) {
+  .vcard {
+    grid-template-columns: 60px minmax(0, 1fr);
+    grid-template-areas: "thumb info" "act act";
+    gap: 8px 10px;
+    padding: 10px;
+  }
+  .vthumb { grid-area: thumb; width: 60px; height: 60px; }
+  .vthumb .emoji-fallback { font-size: 30px; }
+  .vinfo { grid-area: info; }
+  .vact { grid-area: act; flex-direction: row; justify-content: flex-end; }
+}
+
+@media (max-width: 480px) {
+  .plan-grid { grid-template-columns: 1fr; }
+  .garden-grid { padding: 0 16px; }
+}
+
